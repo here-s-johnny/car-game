@@ -45,11 +45,12 @@ $(function() {
  x_a = 50;
  y_a = 50;
  rot = 0;
-
+ v = 0;
+ a = 0;
  drawCar(x_a, y_a, 20, 10, rot);
 
-
  $(window).keydown(function(event){
+
    if(event.keyCode == 65 || event.keyCode == 37) {
      event.preventDefault();
      rot = rot - 2*Math.PI/36;
@@ -59,6 +60,22 @@ $(function() {
    if(event.keyCode == 68 || event.keyCode == 39) {
      event.preventDefault();
      rot = rot + 2*Math.PI/36;
+     clearCanvas();
+     drawCar(x_a, y_a, 20, 10, rot);
+   }
+   if(event.keyCode == 38) {
+     event.preventDefault();
+     a = 0.1;
+     v = v + a;
+     y_a = y_a + v;
+     clearCanvas();
+     drawCar(x_a, y_a, 20, 10, rot);
+   }
+   if(event.keyCode == 40) {
+     event.preventDefault();
+     a = -0.1;
+     v = v + a;
+     y_a = y_a + v;
      clearCanvas();
      drawCar(x_a, y_a, 20, 10, rot);
    }
