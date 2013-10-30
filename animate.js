@@ -1,15 +1,15 @@
 $(function() {
 
-  ctx = $('#canvas')[0].getContext("2d");
+ var ctx = $('#canvas')[0].getContext("2d");
 
-  function drawLine( x_a, y_a, x_b, y_b) {
-    ctx.beginPath();
-    ctx.moveTo(x_a, y_a);
-    ctx.lineTo(x_b, y_b);
-    ctx.stroke();
-  };
+   function clearCanvas() {
+     ctx.save();
+     ctx.setTransform(1, 0, 0, 1, 0, 0);
+     ctx.clearRect(0, 0, canvas.width, canvas.height);
+     ctx.restore();
+   };
 
- function rectangle( center_x, center_y, sizea, sizeb  ) {
+  function rectangle( center_x, center_y, sizea, sizeb  ) {
     ctx.beginPath();
     ctx.moveTo(center_x - sizea/2, center_y + sizeb/2);
     ctx.lineTo(center_x + sizea/2, center_y + sizeb/2);
@@ -20,7 +20,7 @@ $(function() {
     ctx.fill();
   };
 
-function rotate( x, y, alpha ) {
+  function rotate( x, y, alpha ) {
     newx = Math.cos(alpha)*x - Math.sin(alpha)*y;
     newy = Math.sin(alpha)*x + Math.cos(alpha)*y;
     return [newx,newy];
@@ -39,10 +39,31 @@ function rotate( x, y, alpha ) {
    ctx.lineTo(c[0]+x_c, c[1]+y_c);
    ctx.lineTo(d[0]+x_c, d[1]+y_c);
    ctx.lineTo(a[0]+x_c, a[1]+y_c);
-   ctx.closePath();
-   ctx.fill();
+   ctx.stroke();
  };
 
-drawCar( 150, 150, 150, 150, 0);
+ x_a = 50;
+ y_a = 50;
+ rot = 0;
+
+ drawCar(x_a, y_a, 20, 10, rot);
+
+
+ $(window).keydown(function(event){
+   if(event.keyCode == 65 || event.keyCode == 37) {
+     event.preventDefault();
+     rot = rot - 2*Math.PI/36;
+     clearCanvas();
+     drawCar(x_a, y_a, 20, 10, rot);
+   }
+   if(event.keyCode == 68 || event.keyCode == 39) {
+     event.preventDefault();
+     rot = rot + 2*Math.PI/36;
+     clearCanvas();
+     drawCar(x_a, y_a, 20, 10, rot);
+   }
+ });
 
 });
+
+
