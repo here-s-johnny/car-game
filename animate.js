@@ -67,6 +67,8 @@ $(function() {
  rot = 0;
  v = 0;
  acc = 0;
+ acc_const = 0.025;
+ decc_const = 1.01;
  drawCar(x_a, y_a, 20, 10, rot);
 
  $(window).keydown(function(event){
@@ -85,11 +87,11 @@ $(function() {
    }
    if(event.keyCode == 38) {
      event.preventDefault();
-     acc = 0.01;
+     acc = acc_const;
    }
    if(event.keyCode == 40) {
      event.preventDefault();
-     acc = -0.01;
+     acc = -acc_const;
    }
  });
 
@@ -108,7 +110,7 @@ $(function() {
 
    function resolve() { 
      if (acc == 0) {
-       v = v/1.05;
+       v = v/decc_const;
      }
      else {
        v = v + acc;
