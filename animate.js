@@ -1,18 +1,60 @@
 $(function() {
 
   var ctx = $('#canvas')[0].getContext("2d");
-  
-  x_a = 50;
-  y_a = 50;
-  rot = 0;
-  v = 0;
-  acc = 0;
-  acc_const = 0.021;
-  decc_const = 1.01;
-  back_speed = 1;
-  handling = 120;
-  braking_force = 4;
-  drawCar(ctx, x_a, y_a, 20, 10, rot);
+
+  function Car(ctx, beg_x, beg_y) {
+    this.ctx = ctx;
+    this.posx = beg_x;
+    this.posy = beg_y;
+    this.rot = 0; 
+    this.v = Number(0);
+    this.acc = 0;
+    this.acc_const = 0.021;
+    this.decc_const = 1.01;
+    this.back_speed = 1;
+    this.handling = 120;
+    this.braking_force = 4;
+    this.draw = function () { return drawCar(this.ctx, this.posx, this.posy, 20, 10, this.rot); };
+    this.stat = "halt";
+    this.accelerate = function() {
+      this.acc = this.acc_const;
+      this.v = Number(this.v) + Number(this.acc);
+      if (this.stat != "going" && this.v>0) { this.stat = "going" };
+    }
+    this.brake = function () {
+      if (this.v>0) {          // brake
+        this.a = -this.braking_force*this.acc_const;
+        this.v = this.v + this.a;
+      } else {
+        this.v = 0;
+        this.acc = 0; } 
+      if (this.v == 0) { this.stat = "justStopped" }
+    }
+    this.park = function() {
+      this.stat = "halt";
+    }
+    this.accelerateBackwards = function () {
+      if ( this.v > -this.back_speed ) {
+        this.acc = -0.5*this.acc_const;  
+        this.v = this.v + this.acc; }
+    }
+    this.deccelerate = function () {
+      this.acc = 0;           // deccelerate
+      this.v = this.v/this.decc_const;
+    }
+    this.rotate = function (dir) {
+      this.rot = this.rot + dir*2*Math.PI/this.handling;
+    }
+    this.resolveMovement = function () {
+      this.posy = this.posy + this.v*Math.sin(this.rot);
+      this.posx = this.posx + this.v*Math.cos(this.rot);
+      this.draw();
+    }
+  }
+
+  var samochod = new Car(ctx,50,50);
+  samochod.draw();
+
   var pressed = [0,0,0,0];
   carStatus = "halt";
 
@@ -20,42 +62,29 @@ $(function() {
     getKeyboardInput(window, pressed);
 
     if ( pressed[2] == 1 && pressed[1] == 0 ) {
-        acc = acc_const;  // accelerate
-        v = v + acc;
-      if (carStatus != "going" && v>0) { carStatus = "going" };
-    } else if ( carStatus == "going"  && ( pressed[2] == 0 && pressed[1] == 1 ) ) {
-        if (v>0) {          // brake
-          a = -braking_force*acc_const;
-          v = v + a;
-        } else { v = 0; acc = 0; }
-      if (v == 0) { carStatus = "justStopped" }
-    } else if  ( carStatus == "justStopped"  &&  ( pressed[2] == 0 && pressed[1] == 0 ) ) {
-      carStatus = "halt";
-    } else if ( ( carStatus == "halt" || carStatus == "goingBack"  )  && ( pressed[2] == 0 && pressed[1] == 1 ) ) {
-        if ( v > -back_speed ) {
-          acc = -0.5*acc_const;  // accelerate backwards
-          v = v + acc;
-        }
-      if (carStatus != "goingBack") { carStatus != "goingBack"; }
+      samochod.accelerate();
+    } else if ( samochod.stat == "going"  && ( pressed[2] == 0 && pressed[1] == 1 ) ) {
+      samochod.brake();
+    } else if  ( samochod.stat == "justStopped"  &&  ( pressed[2] == 0 && pressed[1] == 0 ) ) {
+      samochod.park();
+    } else if ( ( samochod.stat == "halt" || samochod.stat == "goingBack"  )  && ( pressed[2] == 0 && pressed[1] == 1 ) ) {
+      samochod.accelerateBackwards();
     } else {   
-      acc = 0;           // deccelerate
-      v = v/decc_const;
+      samochod.deccelerate();
     } 
 
     if ( pressed[0] == 1 && pressed[3] == 0 ) {
-      rot = rot - 2*Math.PI/handling;
+      samochod.rotate(-1);
     } else if ( pressed[0] == 0 && pressed[3] == 1 ) {
-      rot = rot + 2*Math.PI/handling;
+      samochod.rotate(1);
     } 
 
-    y_a = y_a + v*Math.sin(rot);
-    x_a = x_a + v*Math.cos(rot);
     clearCanvas(ctx);
-    drawCar(ctx, x_a, y_a, 20, 10, rot);
+    samochod.resolveMovement();
     $('#canvas')[0].height/2
-    frame(ctx, $('#canvas')[0].width/2, $('#canvas')[0].height/2,
-            $('#canvas')[0].width, $('#canvas')[0].height);
+      frame(ctx, $('#canvas')[0].width/2, $('#canvas')[0].height/2,  //draw a frame
+          $('#canvas')[0].width, $('#canvas')[0].height);
   };
 
-  var timer = setInterval(  function(){ resolve()} , 10) ;
+  var timer = setInterval(function(){ resolve()} , 10) ;
 });
