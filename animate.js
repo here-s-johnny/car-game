@@ -7,7 +7,7 @@ $(function() {
     this.posx = beg_x;
     this.posy = beg_y;
     this.rot = 0; 
-    this.v = Number(0);
+    this.v = 0;
     this.acc = 0;
     this.acc_const = 0.021;
     this.decc_const = 1.01;
@@ -18,7 +18,7 @@ $(function() {
     this.stat = "halt";
     this.accelerate = function() {
       this.acc = this.acc_const;
-      this.v = Number(this.v) + Number(this.acc);
+      this.v = this.v + this.acc;
       if (this.stat != "going" && this.v>0) { this.stat = "going" };
     }
     this.brake = function () {
