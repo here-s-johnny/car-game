@@ -5,26 +5,34 @@ function clearCanvas(ctx) {
   ctx.restore();
 };
 
-function rectangle(ctx, center_x, center_y, sizea, sizeb  ) {
+function frame(ctx, centerX, centerY, sizeA, sizeB) {
   ctx.beginPath();
-  ctx.moveTo(center_x - sizea/2, center_y + sizeb/2);
-  ctx.lineTo(center_x + sizea/2, center_y + sizeb/2);
-  ctx.lineTo(center_x + sizea/2, center_y - sizeb/2);
-  ctx.lineTo(center_x - sizea/2, center_y - sizeb/2);
-  ctx.lineTo(center_x - sizea/2, center_y + sizeb/2);
-  ctx.closePath();
-  ctx.fill();
-};
-
-function frame(ctx, center_x, center_y, sizea, sizeb  ) {
-  ctx.beginPath();
-  ctx.moveTo(center_x - sizea/2, center_y + sizeb/2);
-  ctx.lineTo(center_x + sizea/2, center_y + sizeb/2);
-  ctx.lineTo(center_x + sizea/2, center_y - sizeb/2);
-  ctx.lineTo(center_x - sizea/2, center_y - sizeb/2);
-  ctx.lineTo(center_x - sizea/2, center_y + sizeb/2);
+  ctx.moveTo(centerX - sizeA/2, centerY + sizeB/2);
+  ctx.lineTo(centerX + sizeA/2, centerY + sizeB/2);
+  ctx.lineTo(centerX + sizeA/2, centerY - sizeB/2);
+  ctx.lineTo(centerX - sizeA/2, centerY - sizeB/2);
+  ctx.lineTo(centerX - sizeA/2, centerY + sizeB/2);
   ctx.closePath();
   ctx.stroke();
+};
+
+function drawCircle (ctx, centerX, centerY, radius) {
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+  ctx.fillStyle = "black";
+  ctx.fill();
+  ctx.stroke();
+}
+function drawRectangle(ctx, centerX, centerY, sizeA, sizeB  ) {
+  ctx.beginPath();
+  ctx.moveTo(centerX - sizeA/2, centerY + sizeB/2);
+  ctx.lineTo(centerX + sizeA/2, centerY + sizeB/2);
+  ctx.lineTo(centerX + sizeA/2, centerY - sizeB/2);
+  ctx.lineTo(centerX - sizeA/2, centerY - sizeB/2);
+  ctx.lineTo(centerX - sizeA/2, centerY + sizeB/2);
+  ctx.closePath();
+  ctx.fillStyle = "black";
+  ctx.fill();
 };
 
 function rotate( x, y, alpha ) {
@@ -33,10 +41,10 @@ function rotate( x, y, alpha ) {
   return [newx,newy];
 };
 
-function drawCar(ctx, x_c, y_c, sizea, sizeb, alpha) {
-  e = sizea/2;
-  f = sizeb/2;
-  g = sizea/4;
+function drawCar(ctx, x_c, y_c, sizeA, sizeB, alpha) {
+  e = sizeA/2;
+  f = sizeB/2;
+  g = sizeA/4;
   a = rotate( e, f, alpha);
   b = rotate(-e, f, alpha);
   c = rotate(-e,-f, alpha);
@@ -53,6 +61,13 @@ function drawCar(ctx, x_c, y_c, sizea, sizeb, alpha) {
   ctx.beginPath();
   ctx.moveTo(h[0]+x_c, h[1]+y_c);
   ctx.lineTo(i[0]+x_c, i[1]+y_c);
+  ctx.stroke();
+};
+
+function drawLine(ctx, xBeg, yBeg, xFin, yFin) {
+  ctx.beginPath();
+  ctx.moveTo(xBeg, yBeg);
+  ctx.lineTo(xFin, yFin);
   ctx.stroke();
 };
 
